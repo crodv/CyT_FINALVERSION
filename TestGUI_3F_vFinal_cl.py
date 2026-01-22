@@ -1080,7 +1080,7 @@ class FermenterPanel(ctk.CTkFrame):
 
         ctk.CTkButton(
             state_row,
-            text="Gráfico tiempo real",
+            text="Grafico Temperatura",
             command=lambda: self.app.open_realtime_plot(self.name),
             fg_color="#22c55e",
             hover_color="#16a34a",
@@ -1800,7 +1800,7 @@ class App(ctk.CTk):
 
         header = ttk.Frame(top)
         header.pack(fill="x", padx=8, pady=(8, 4))
-        ttk.Label(header, text="Caudalímetro CO2 (4-20 mA)", font=("Segoe UI", 14, "bold")).pack(side="left")
+        ttk.Label(header, text="Caudalímetro CO2", font=("Segoe UI", 14, "bold")).pack(side="left")
         mode_text = "SIMULADOR" if reader.sim else "HARDWARE"
         mode_color = "#dc2626" if reader.sim else "#16a34a"
         ttk.Label(header, text=mode_text, foreground=mode_color).pack(side="right")
@@ -1811,23 +1811,17 @@ class App(ctk.CTk):
         stats.grid_columnconfigure(1, weight=1)
 
         flow_var = tk.StringVar(value="0.00 SCCM")
-        current_var = tk.StringVar(value="0.00 mA")
-        voltage_var = tk.StringVar(value="0.000 V")
         status_var = tk.StringVar(value="Esperando...")
         next_var = tk.StringVar(value="--:--:--")
 
         ttk.Label(stats, text="Caudal:", font=("Segoe UI", 12, "bold")).grid(row=0, column=0, sticky="w")
         ttk.Label(stats, textvariable=flow_var, font=("Segoe UI", 12)).grid(row=0, column=1, sticky="w")
-        ttk.Label(stats, text="Corriente:", font=("Segoe UI", 12, "bold")).grid(row=2, column=0, sticky="w")
-        ttk.Label(stats, textvariable=current_var, font=("Segoe UI", 12)).grid(row=2, column=1, sticky="w")
-        ttk.Label(stats, text="Voltaje:", font=("Segoe UI", 12, "bold")).grid(row=3, column=0, sticky="w")
-        ttk.Label(stats, textvariable=voltage_var, font=("Segoe UI", 12)).grid(row=3, column=1, sticky="w")
-        ttk.Label(stats, text="Estado:", font=("Segoe UI", 12, "bold")).grid(row=4, column=0, sticky="w")
-        ttk.Label(stats, textvariable=status_var, font=("Segoe UI", 12)).grid(row=4, column=1, sticky="w")
-        ttk.Label(stats, text="Siguiente muestra:", font=("Segoe UI", 12, "bold")).grid(row=5, column=0, sticky="w")
-        ttk.Label(stats, textvariable=next_var, font=("Segoe UI", 12)).grid(row=5, column=1, sticky="w")
+        ttk.Label(stats, text="Estado:", font=("Segoe UI", 12, "bold")).grid(row=1, column=0, sticky="w")
+        ttk.Label(stats, textvariable=status_var, font=("Segoe UI", 12)).grid(row=1, column=1, sticky="w")
+        ttk.Label(stats, text="Siguiente muestra:", font=("Segoe UI", 12, "bold")).grid(row=2, column=0, sticky="w")
+        ttk.Label(stats, textvariable=next_var, font=("Segoe UI", 12)).grid(row=2, column=1, sticky="w")
         ttk.Label(stats, text="SCCM = cm3/min", font=("Segoe UI", 10, "italic")).grid(
-            row=6, column=0, columnspan=2, sticky="w", pady=(4, 0)
+            row=3, column=0, columnspan=2, sticky="w", pady=(4, 0)
         )
 
         control = ttk.Frame(top)
@@ -1960,14 +1954,10 @@ class App(ctk.CTk):
             samples = self.flow_samples.get(fermenter, [])
             if not samples:
                 flow_var.set("0.00 SCCM")
-                current_var.set("0.00 mA")
-                voltage_var.set("0.000 V")
                 status_var.set("Esperando...")
                 return
-            _, flow, current_ma, voltage, status = samples[-1]
+            _, flow, _, _, status = samples[-1]
             flow_var.set(f"{flow:0.2f} SCCM")
-            current_var.set(f"{current_ma:0.2f} mA")
-            voltage_var.set(f"{voltage:0.3f} V")
             status_var.set(status)
 
         def update_countdown():
