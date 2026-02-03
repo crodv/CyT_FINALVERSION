@@ -1515,22 +1515,21 @@ class FermenterPanel(ctk.CTkFrame):
         if not self.manual_mode.get():
             sp = float(self.sp.get())
             band = max(0.05, float(self.band.get()))
-            # control frío
-            if self.cold_in:
-                if self.t <= sp - band:
-                    self.cold_in = False
-            else:
+            deadband = band / 5.0
+            # Schmitt trigger con 3 estados:
+            # - Se activa solo fuera de la banda principal.
+            # - Se apaga con banda muerta alrededor del SP.
+            if self.cold_in and self.t <= sp - deadband:
+                self.cold_in = False
+            if self.hot_in and self.t >= sp + deadband:
+                self.hot_in = False
+
+            # Solo activar fuera de la banda principal de histéresis
+            if not self.cold_in and not self.hot_in:
                 if self.t >= sp + band:
                     self.cold_in = True
-            # control caliente
-            if self.hot_in:
-                if self.t >= sp + band:
-                    self.hot_in = False
-            else:
-                if self.t <= sp - band:
+                elif self.t <= sp - band:
                     self.hot_in = True
-            if not self.cold_in and not self.hot_in:
-                self.cerrar_todo()
             self._apply_relays()
             self._sync_leds()
 
