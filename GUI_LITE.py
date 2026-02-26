@@ -1969,8 +1969,8 @@ class App(tk.Tk):
 
         title_row = ttk.Frame(top_bar)
         title_row.grid(row=0, column=0, sticky="w")
-        ttk.Label(title_row, text="Panel 3 Fermentadores", font=("Segoe UI", 20, "bold")).pack(side="left")
-        ttk.Label(title_row, text="  by Francisco Rojas", font=("Segoe UI", 12, "italic")).pack(side="left")
+        ttk.Label(title_row, text="Panel Fermentadores", font=("Segoe UI", 20, "bold")).pack(side="left")
+        ttk.Label(title_row, text="  by Claudio Rodriguez", font=("Segoe UI", 12, "italic")).pack(side="left")
 
         sim_mode = self.hw.sim or self.hw.sim_gpio or not self.hw.ds_devices
         mode_text = f"Modo: {'SIMULADOR' if sim_mode else 'HARDWARE'}"
